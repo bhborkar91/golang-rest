@@ -1,0 +1,14 @@
+apiVersion: skaffold/v1
+kind: Config
+deploy:
+  kubectl:
+    manifests:
+      - ./infra/k8s/*
+build:
+  local:
+    push: false
+  artifacts:
+    - image: bhborkar91/golang-rest
+      context: .
+      docker:
+        dockerfile: Dockerfile

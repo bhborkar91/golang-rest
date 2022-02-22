@@ -1,0 +1,18 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: golang-app-ingress
+  labels:
+    name: golang-app-ingress
+spec:
+  rules:
+    - host: golang-app.local
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: golang-app
+                port:
+                  number: 4000
