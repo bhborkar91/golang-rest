@@ -33,7 +33,9 @@ jobs:
   deploy:
     needs: build
     runs-on: deployment-box
-    concurrency: production
+    concurrency: 
+      group: production
+      cancel-in-progress: true
     
     steps:
       - name: Download a Build Artifact
