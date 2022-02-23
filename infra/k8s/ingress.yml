@@ -4,13 +4,16 @@ metadata:
   name: golang-app-ingress
   labels:
     name: golang-app-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/use-regex: "true"
 spec:
   rules:
-    - host: golang-app.local
+    - host: golang-rest.local
       http:
         paths:
           - pathType: Prefix
-            path: "/"
+            path: "/.*"
             backend:
               service:
                 name: golang-app

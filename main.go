@@ -12,5 +12,5 @@ func main() {
 
 	users.AddUsersRoutes(api)
 
-	g.Run("localhost:4000")
+	g.Run("0.0.0.0:4000")
 }
