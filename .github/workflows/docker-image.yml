@@ -40,7 +40,7 @@ jobs:
           # Artifact name
           name: docker-compose
           # Destination path
-          path: docker-compose.yml
+          path: .
 
       - name: Pull latest images
         run: docker-compose pull
