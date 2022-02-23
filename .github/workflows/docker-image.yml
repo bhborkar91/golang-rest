@@ -30,6 +30,7 @@ jobs:
           # The desired behavior if no files are found using the provided path.
 
   deploy:
+    needs: build
     runs-on: deployment-box
 
     steps:
