@@ -3,6 +3,6 @@ version: '3.7'
 services:
   app:
     build: .
-    image: bhborkar91/golang-rest
+    image: ghcr.io/bhborkar91/golang-rest
     ports:
       - 4000:4000
