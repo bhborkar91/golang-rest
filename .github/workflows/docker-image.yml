@@ -6,7 +6,7 @@ on:
   pull_request:
     branches: [main]
   workflow_dispatch:
-    
+
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -36,17 +36,16 @@ jobs:
           # Artifact name
           name: k8s
           # A file, directory or wildcard pattern that describes what to upload
-          path: infra/k8s
+          path: infra/k8s/
           # The desired behavior if no files are found using the provided path.
-
 
   deploy-docker:
     needs: build
     runs-on: deployment-box
-    concurrency: 
+    concurrency:
       group: production
       cancel-in-progress: true
-    
+
     steps:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
@@ -63,10 +62,10 @@ jobs:
   deploy-k8s:
     needs: build
     runs-on: deployment-box
-    concurrency: 
+    concurrency:
       group: production
       cancel-in-progress: true
-    
+
     steps:
       - name: Download a Build Artifact
         uses: actions/download-artifact@v2.1.0
@@ -74,7 +73,7 @@ jobs:
           # Artifact name
           name: k8s
           # Destination path
-          path: .
+          path: k8s/
 
       - name: Deploy the containers
         run: kubectl apply -f k8s/
