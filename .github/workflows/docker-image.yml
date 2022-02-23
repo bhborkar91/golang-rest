@@ -20,7 +20,7 @@ jobs:
       - name: Push the Docker image
         run: docker-compose push app
         if: success()
-      - name: Upload a Build Artifact
+      - name: Upload docker compose
         uses: actions/upload-artifact@v2.3.1
         if: success()
         with:
@@ -29,8 +29,18 @@ jobs:
           # A file, directory or wildcard pattern that describes what to upload
           path: docker-compose.yml
           # The desired behavior if no files are found using the provided path.
+      - name: Upload kubernetes
+        uses: actions/upload-artifact@v2.3.1
+        if: success()
+        with:
+          # Artifact name
+          name: k8s
+          # A file, directory or wildcard pattern that describes what to upload
+          path: infra/k8s
+          # The desired behavior if no files are found using the provided path.
 
-  deploy:
+
+  deploy-docker:
     needs: build
     runs-on: deployment-box
     concurrency: 
@@ -50,3 +60,21 @@ jobs:
         run: docker-compose pull
       - name: Deploy the containers
         run: docker-compose up -d
+  deploy-k8s:
+    needs: build
+    runs-on: deployment-box
+    concurrency: 
+      group: production
+      cancel-in-progress: true
+    
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          # Artifact name
+          name: k8s
+          # Destination path
+          path: .
+
+      - name: Deploy the containers
+        run: kubectl apply -f k8s/
