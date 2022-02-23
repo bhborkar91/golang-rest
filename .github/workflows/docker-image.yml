@@ -15,6 +15,6 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     - name: Login to Docker Hub
-      run: echo $GITHUB_TOKEN | docker login ghcr.io -u bhborkar91 --password-stdin
+      run: docker login ghcr.io --username bhborkar91 --password $GITHUB_TOKEN
     - name: Build the Docker image
       run: docker-compose build
