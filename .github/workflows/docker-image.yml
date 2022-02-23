@@ -15,7 +15,33 @@ jobs:
       - name: Login to Docker Hub
         run: docker login ghcr.io --username bhborkar91 --password "${{ secrets.GITHUB_TOKEN }}"
       - name: Build the Docker image
-        run: docker-compose build
+        run: docker-compose -f docker-compose.yml -f docker-compose.build.yml build
       - name: Push the Docker image
         run: docker-compose push app
         if: success()
+      - name: Upload a Build Artifact
+        uses: actions/upload-artifact@v2.3.1
+        if: success()
+        with:
+          # Artifact name
+          name: docker-compose
+          # A file, directory or wildcard pattern that describes what to upload
+          path: docker-compose.yml
+          # The desired behavior if no files are found using the provided path.
+
+  deploy:
+    runs-on: deployment-box
+
+    steps:
+      - name: Download a Build Artifact
+        uses: actions/download-artifact@v2.1.0
+        with:
+          # Artifact name
+          name: docker-compose
+          # Destination path
+          path: docker-compose.yml
+
+      - name: Pull latest images
+        run: docker-compose pull
+      - name: Deploy the containers
+        run: docker-compose up -d

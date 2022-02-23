@@ -2,7 +2,10 @@ version: '3.7'
 
 services:
   app:
-    build: .
     image: ghcr.io/bhborkar91/golang-rest
     ports:
       - 4000:4000
+    environment:
+      - MONGO_URL=mongodb://db:27017/golang-rest
+  db:
+    image: mongo:4.2
