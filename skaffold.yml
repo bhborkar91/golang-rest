@@ -8,7 +8,7 @@ build:
   local:
     push: false
   artifacts:
-    - image: bhborkar91/golang-rest
+    - image: ghcr.io/bhborkar91/golang-rest
       context: .
       docker:
         dockerfile: Dockerfile

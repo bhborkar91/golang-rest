@@ -13,7 +13,7 @@ spec:
     spec:
       containers:
         - name: golang-app
-          image: bhborkar91/golang-rest
+          image: ghcr.io/bhborkar91/golang-rest
           resources:
             limits:
               memory: "1Gi"
