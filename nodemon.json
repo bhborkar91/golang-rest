@@ -1,0 +1,11 @@
+{
+    "watch": [
+        "src"
+    ],
+    "ext": "go",
+    "env": {
+        "MONGO_URL": "mongodb://localhost:37017/golang-rest"
+    },
+    "signal": "SIGTERM",
+    "exec": "go run ."
+}

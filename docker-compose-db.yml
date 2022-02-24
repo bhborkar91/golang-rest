@@ -1,0 +1,9 @@
+# independent docker compose file that can be used to deploy a local database
+
+version: '3.7'
+
+services:
+  db:
+    image: mongo:4.2
+    ports:
+      - 37017:27017
