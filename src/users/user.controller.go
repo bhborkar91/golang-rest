@@ -2,7 +2,16 @@ package users
 
 import "github.com/gin-gonic/gin"
 
-func AddUsersRoutes(c *gin.RouterGroup) {
-	c.GET("/users", GetUsers)
-	c.POST("/users", CreateUser)
+type UserController struct {
+	service *UserService
+}
+
+func GetUserController(service *UserService) *UserController {
+	return &UserController{service}
+}
+
+func (controller *UserController) AddRoutes(c *gin.RouterGroup) {
+
+	c.GET("/users", controller.service.GetUsers)
+	c.POST("/users", controller.service.CreateUser)
 }

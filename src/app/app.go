@@ -11,16 +11,16 @@ import (
 
 func Run() {
 	fmt.Println("Starting the go application")
-	g := gin.Default()
 
 	client, ctx, cancel := db.Connect()
 	defer db.Close(client, ctx, cancel)
 
+	g := gin.Default()
 	g.Use(middlewares.RequestLogging)
 
 	api := g.Group("/api")
 
-	users.AddUsersRoutes(api)
+	users.GetUserController(users.GetUserService(client)).AddRoutes(api)
 
 	g.Run("0.0.0.0:4000")
 }
