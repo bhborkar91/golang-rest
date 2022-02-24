@@ -1,28 +1,36 @@
 package users
 
 import (
+	"app/src/db"
 	"fmt"
 	"net/http"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/mongo"
+	"go.mongodb.org/mongo-driver/bson"
 )
 
 type UserService struct {
-	client *mongo.Client
+	client *db.MongoClient
 }
 
-var data = []User{
-	{Id: "1", Name: "Bhushan"},
-	{Id: "2", Name: "Chitranjan"},
-}
-
-func GetUserService(client *mongo.Client) *UserService {
+func GetUserService(client *db.MongoClient) *UserService {
 	return &UserService{client}
 }
 
 func (service *UserService) GetUsers(c *gin.Context) {
-	print(service.client)
+	collection := service.client.Client.Database("golang-rest").Collection("users")
+
+	cursor, err := collection.Find(service.client.Ctx, bson.D{})
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+
+	var data []User
+	if err := cursor.All(service.client.Ctx, &data); err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
+
 	c.IndentedJSON(http.StatusOK, data)
 }
 
@@ -34,7 +42,13 @@ func (service *UserService) CreateUser(c *gin.Context) {
 		return
 	}
 
-	data = append(data, newUser)
+	collection := service.client.Client.Database("golang-rest").Collection("users")
+
+	_, err := collection.InsertOne(service.client.Ctx, newUser)
+
+	if err != nil {
+		c.AbortWithStatus(http.StatusInternalServerError)
+	}
 
 	c.IndentedJSON(http.StatusCreated, newUser)
 }

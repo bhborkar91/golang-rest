@@ -12,8 +12,8 @@ import (
 func Run() {
 	fmt.Println("Starting the go application")
 
-	client, ctx, cancel := db.Connect()
-	defer db.Close(client, ctx, cancel)
+	client := db.Connect()
+	defer client.Close()
 
 	g := gin.Default()
 	g.Use(middlewares.RequestLogging)
