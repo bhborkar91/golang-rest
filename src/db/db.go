@@ -69,3 +69,8 @@ func Connect() *MongoClient {
 
 	return &MongoClient{client, ctx, cancel}
 }
+
+func (client *MongoClient) Collection(name string) (context.Context, context.CancelFunc, *mongo.Collection) {
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	return ctx, cancel, client.Client.Database("golang-rest").Collection(name)
+}

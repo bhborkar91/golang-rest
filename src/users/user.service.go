@@ -2,11 +2,9 @@ package users
 
 import (
 	"app/src/db"
-	"fmt"
-	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type UserService struct {
@@ -17,38 +15,38 @@ func GetUserService(client *db.MongoClient) *UserService {
 	return &UserService{client}
 }
 
-func (service *UserService) GetUsers(c *gin.Context) {
-	collection := service.client.Client.Database("golang-rest").Collection("users")
+func (service *UserService) GetUsers() ([]User, error) {
+	ctx, cancel, collection := service.client.Collection("users")
+	defer cancel()
 
-	cursor, err := collection.Find(service.client.Ctx, bson.D{})
+	cursor, err := collection.Find(ctx, bson.D{})
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		return nil, err
 	}
 
-	var data []User
+	var data []User = []User{}
 	if err := cursor.All(service.client.Ctx, &data); err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		return nil, err
 	}
 
-	c.IndentedJSON(http.StatusOK, data)
+	return data, nil
 }
 
-func (service *UserService) CreateUser(c *gin.Context) {
-	var newUser User
-
-	if err := c.BindJSON(&newUser); err != nil {
-		fmt.Printf("Error while binding user : [%s]\n", err)
-		return
+func (service *UserService) CreateUser(userData CreateUserDTO) (*User, error) {
+	newUser := User{
+		Id:   primitive.NewObjectID(),
+		Name: userData.Name,
 	}
 
-	collection := service.client.Client.Database("golang-rest").Collection("users")
+	ctx, cancel, collection := service.client.Collection("users")
+	defer cancel()
 
-	_, err := collection.InsertOne(service.client.Ctx, newUser)
+	_, err := collection.InsertOne(ctx, newUser)
 
 	if err != nil {
-		c.AbortWithStatus(http.StatusInternalServerError)
+		return nil, err
 	}
 
-	c.IndentedJSON(http.StatusCreated, newUser)
+	return &newUser, nil
 }
