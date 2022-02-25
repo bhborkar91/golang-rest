@@ -17,6 +17,7 @@ func Run() {
 
 	g := gin.Default()
 	g.Use(middlewares.RequestLogging)
+	g.Use(middlewares.ErrorHandling)
 
 	api := g.Group("/api")
 

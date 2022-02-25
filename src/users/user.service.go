@@ -2,6 +2,7 @@ package users
 
 import (
 	"app/src/db"
+	"errors"
 
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
@@ -34,6 +35,10 @@ func (service *UserService) GetUsers() ([]User, error) {
 }
 
 func (service *UserService) CreateUser(userData CreateUserDTO) (*User, error) {
+	if userData.Name == "InvalidName" {
+		return nil, errors.New("Name is invalid")
+	}
+
 	newUser := User{
 		Id:   primitive.NewObjectID(),
 		Name: userData.Name,
